@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,10 +12,12 @@ public class Fifa {
     private Double tvAudienceShare;
     private Double gdpWeightedShare;
 
+    private List<Fifa> fifa = new ArrayList<>();
+
     public Fifa() {
 
     }
-    
+
     public Fifa(String country, String confederation, Double populationShare, Double tvAudienceShare,
             Double gdpWeightedShare) {
         this.country = country;
@@ -61,26 +67,56 @@ public class Fifa {
         this.gdpWeightedShare = gdpWeightedShare;
     }
 
+    public List<Fifa> getFifa() {
+        return fifa;
+    }
+
+    public static void file(List<Fifa> fifa) {
+        try {
+            File file = new File(
+                    "C:\\Users\\Lucas Ferreira\\OneDrive\\Área de Trabalho\\edaa-exav1-2024\\src\\fifa_countries_audience.csv");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            br.readLine();
+            String line = br.readLine();
+            while (line != null) {
+                String[] dados = line.split(",");
+                String county = dados[0];
+                String conf = dados[1];
+                double pop = Double.parseDouble(dados[2]);
+                double tv = Double.parseDouble(dados[3]);
+                double gdp = Double.parseDouble(dados[4]);
+
+                fifa.add(new Fifa(county, conf, pop, tv, gdp));
+                line = br.readLine();
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public String toString() {
         return country + ", " + confederation + ", " + populationShare
                 + ", " + tvAudienceShare + ", " + gdpWeightedShare;
     }
-    
+
     public static void sortCountryes(List<Fifa> list) {
+        file(list);
         Collections.sort(list, (countyOne, countryTwo) -> countyOne.getCountry().compareTo(countryTwo.getCountry()));
         list(list);
     }
 
     public static void sortAudience(List<Fifa> list) {
-        Collections.sort(list, (AudienceOne, AudienceTwo) -> AudienceTwo.getTvAudienceShare().compareTo(AudienceOne.getTvAudienceShare()));
+        file(list);
+        Collections.sort(list, (AudienceOne, AudienceTwo) -> AudienceTwo.getTvAudienceShare()
+                .compareTo(AudienceOne.getTvAudienceShare()));
         list(list);
     }
+
     public static void list(List<Fifa> list) {
-        for(Fifa f : list) {
+        for (Fifa f : list) {
             System.out.println(f);
         }
     }
 }
-
- 
